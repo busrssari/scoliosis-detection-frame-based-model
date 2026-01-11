@@ -1,0 +1,53 @@
+{
+    "train": [
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta5.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta16.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta15.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta19.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta1_kivircik.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta14.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta4.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta2.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta17.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta6.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta12.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta10.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta9.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta18.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta11.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy5.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy15.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy16.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy7.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy12.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy9.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy6.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy13.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy17.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy3.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy14.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy2.mov"
+    ],
+    "val": [
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta_20.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta8.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta3.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/hasta/hasta7.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy8.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy1.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy10.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/train-data/saglikli/healthy11.mov"
+    ],
+    "test": [
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/hasta/hasta_test_4.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/saglikli/healthy_3_test.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/hasta/hasta_test_3.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/saglikli/healthy_1_test.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/saglikli/healthy_4_test.mp4",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/hasta/hasta_test_2.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/saglikli/healthy_5_test.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/saglikli/healthy_2_test.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/hasta/hasta_test_5.mov",
+        "/mnt/c/Users/gtu/Desktop/transfer-data/test-data/hasta/hasta_test_1.mov"
+    ]
+}
