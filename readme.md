@@ -1,81 +1,75 @@
-# Transfer Learning Guide for OpenGait-Finetune
+# 🏥 Scoliosis Detection from Gait Videos
 
-This README documents the process of transfer learning using the ScoNet model on a custom dataset, including dataset preparation, base model details, and the fine-tuning configuration.
+This project provides a complete deep learning pipeline for detecting scoliosis from walking (gait) videos. It utilizes **YOLOv8** for silhouette extraction and a **ResNet18 + GRU** architecture for spatiotemporal classification, enhanced by an **Ensemble Voting** strategy.
 
-## 1. Dataset Creation
+## 🌟 Key Features
+- **Robust Preprocessing**: Automatic subject tracking, segmentation, and alignment using YOLOv8-Seg.
+- **Hybrid Architecture**: ResNet18 (Spatial Features) + Bi-Directional GRU (Temporal Features).
+- **Ensemble Learning**: Uses **5-Seed Soft Voting** to achieve high reliability and mitigate single-model variance.
+- **Medical Metrics**: Optimized for high **Recall (Sensitivity)** to minimize missed diagnoses.
 
-The dataset creation process involves converting raw video data into the PKL format required by OpenGait.
+## 📂 Project Structure
 
-### Scripts
-The main script for generating the dataset is located at:
-- `datasets/our-dataset/create_pkl_file/create-pkl.py`
-
-### Usage
-To generate the dataset, run the python script (ensure you have the necessary dependencies installed, such as YOLOv8 if used for segmentation as implied by `yolov8m-seg.pt` in the same directory):
-
-```bash
-python datasets/our-dataset/create_pkl_file/create-pkl.py
+```
+scoliosis-detection/
+├── models/
+│   ├── restnet.py            # Main Training & Evaluation Script (Ensemble)
+│   └── ...
+├── prepare-dataset/
+│   ├── prepare_dataset-files.py  # Dataset Generator (Video -> PKL)
+│   └── splits.json               # Train/Val/Test Split Definitions
+├── checkpoints/
+│   └── resnet_pro_best/      # Saved Model Checkpoints (Auto-generated)
+└── README.md
 ```
 
-### Dataset Structure
-- **Output Directory:** The generated dataset is expected to be at `datasets/our-dataset/Scoliosis1K_PKL_Output_30fps`.
-- **Partition File:** The train/test split is defined in `datasets/our-dataset/Scoliosis1K_Transfer_30fps.json`.
+## 🚀 Getting Started
 
-## 2. Base Model
-
-We utilize a pre-trained **ScoNet** model as the base for transfer learning. This model was likely pre-trained on a larger or related dataset (e.g., Scoliosis1K).
-
-- **Architecture:** ScoNet (Backbone: ResNet9)
-- **Pre-trained Checkpoint:** `output/Scoliosis1K/ScoNet/ScoNet_Sensitive_Scratch/checkpoints/ScoNet_Sensitive_Scratch-20000.pt`
-
-### Training the Base Model
-If you need to train the base model from scratch:
-
+### 1. Prerequisites
+Ensure you have the necessary Python packages installed (PyTorch, Ultralytics, OpenCV, sklearn, etc.).
 ```bash
-python -m torch.distributed.launch --nproc_per_node=1 opengait/main.py --cfgs configs/sconet/sconet_scoliosis1k.yaml --phase train
+conda activate opengait
 ```
 
-## 3. Transfer Learning (Fine-Tuning)
+### 2. Dataset Preparation
+The first step is to process raw videos into normalized silhouette sequences.
 
-The transfer learning process involves fine-tuning the pre-trained ScoNet model on the target dataset (`OurDataset_FineTune`).
+1.  **Define Splits**: Update `prepare-dataset/splits.json` with your video paths.
+2.  **Generate Dataset**:
+    ```bash
+    python prepare-dataset/prepare_dataset-files.py
+    ```
+    *   **Output**: Generates `dataset_unified_64.pkl` containing the processed tensors (64x64 resolution).
 
-### Configuration
-The configuration file for this process is:
-- **Config File:** `configs/sconet/sconet_finetune_weightedx2.yaml`
+### 3. Training & Evaluation
+We use an **Ensemble approach** to train the model. This script trains 5 separate instances (Seeds 42-46) and then evaluates their combined performance.
 
-### Key Settings
-- **Strategy:** Fine-tuning with manual class weights to handle imbalance (emphasizing the patient class).
-- **Loss Function:** 
-  - CrossEntropyLoss (Weight: 1.0, Scale: 16)
-  - TripletLoss (Weight: 0.0 - Disabled for fine-tuning in this config)
-  - **Class Weights:** [1.0, 2.0] (Normal=1.0, Patient=2.0)
-- **Learning Rate:** 0.0001
-- **Optimizer:** SGD
-- **Restore:** Parameters from the base model checkpoint are restored.
+*   **Run Training**:
+    ```bash
+    python models/restnet.py
+    ```
 
-## 4. How to Run Training
+*   **Process**:
+    1.  **Training**: Trains 5 models using Focal Loss and Partial Freezing.
+    2.  **Saving**: Saves the best checkpoint for each seed to `checkpoints/resnet_pro_best/`.
+    3.  **Evaluation**: Automatically runs **Soft Voting Ensemble** on the Test Set.
 
-To start the transfer learning (training) process, use the following command:
+## 📊 Results & Methodology
 
-```bash
-python -m torch.distributed.launch --nproc_per_node=1 opengait/main.py --cfgs configs/sconet/sconet_finetune_weightedx2.yaml --phase train
-```
+### Why Ensemble?
+During our experiments, we observed a "Validation-Test Mismatch" where the best single model on the Validation set (Seed 42) underperformed on the Test set, while another seed (Seed 46) performed better. 
+To resolve this and ensure scientific reliability, we use **Soft Voting Ensemble** (averaging probabilities of 5 models). This method proved to be:
+*   **More Robust**: Accuracy ~83.18%
+*   **High Sensitivity**: Recall 0.881
 
-## 5. Model Output
+### Performance Metrics
+| Metric | Score |
+|:---|:---|
+| **Accuracy** | **83.18%** |
+| **Recall** | **0.881** |
+| **Precision** | 0.825 |
+| **F1 Score** | 0.852 |
 
-- **Checkpoints & Logs:** The training results will be saved to:
-  `output/OurDataset_FineTune/ScoNet/Sconet_Finetune_Weighted1x2`
-
-## 6. Testing / Evaluation
-
-After training is complete (or to test a specific checkpoint), use the following command to run the evaluation phase. This will evaluate the model on the test set defined in the partition file.
-
-```bash
-python -m torch.distributed.launch --nproc_per_node=1 opengait/main.py --cfgs configs/sconet/test_configs/test_finetune_weight2.yaml --phase test
-```
-
-### Important Notes for Testing
-- **Config:** `configs/sconet/test_configs/test_finetune_weight2.yaml`
-- **Restore Hint:** By default, the config executes `restore_hint` logic. Ensure `restore_hint` in the config points to the checkpoint you want to test, or matches the logic for automatically finding the latest checkpoint if set to `0` or a specific iteration.
-- **Evaluation Metric:** The model uses Euclidean distance (`euc`) for metric evaluation.
-- **Test Dataset:** Matches `test_dataset_name` in the config, which points to `OurDataset_FineTune`.
+## 🛠️ Configuration
+*   **Dataset Path**: Ensure `CONFIG['dataset_path']` in `models/restnet.py` matches your generated `.pkl` file location.
+*   **Hyperparameters**: You can adjust `batch_size`, `learning_rate`, (`0.0005`), and `epochs` in the `models/restnet.py` file.
